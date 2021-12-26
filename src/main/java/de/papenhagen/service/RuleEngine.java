@@ -2,40 +2,53 @@ package de.papenhagen.service;
 
 import de.papenhagen.entities.Point;
 import de.papenhagen.entities.Range;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import static de.papenhagen.entities.Postion.*;
-
+@Slf4j
 public class RuleEngine {
 
     private RuleEngine() {
     }
 
-    final static Point feedDown = new Point(5, FEEDS_DOWN, 9.05);
-    final static Point feedUp = new Point(5, FEEDS_UP, 32.65);
-
-    //stand on Nose is a combination of standing on nose and half nose standing with 0,20%
-    final static Point standOnNose = new Point(10, STAND_ON_NOSE, 2.10 + 0.20);
-
-    final static Point layLeft = new Point(1, LAY_LEFT, 31.05);
-    final static Point layRight = new Point(1, LAY_RIGHT, 24.95);
-
-    public static Optional<Point> getPointTo(final double number) {
+    public static Optional<Point> getPointTo(final double number, final List<Point> pointList) {
+        //check for in range of the probability
         if (number < 0 || number > 100) {
             return Optional.empty();
         }
-        Map<Range, Point> rangesMap = new HashMap<>();
-        rangesMap.put(new Range(0, feedDown.getProbability()), feedDown);
-        rangesMap.put(new Range(feedDown.getProbability() + 0.01, feedUp.getProbability()), feedUp);
-        rangesMap.put(new Range(feedUp.getProbability() + 0.01, standOnNose.getProbability()), standOnNose);
-        rangesMap.put(new Range(standOnNose.getProbability() + 0.01, layLeft.getProbability()), layLeft);
-        rangesMap.put(new Range(layLeft.getProbability() + 0.01, layRight.getProbability()), layRight);
+        //check if all probability are together
+        if (pointList.stream().mapToDouble(Point::getProbability).sum() != 100) {
+            log.error("the Sum of all given Point probability did not match 100%");
+            return Optional.empty();
+        }
 
-        return rangesMap.entrySet().stream()
-                .filter(k -> k.getKey().contains(number))
-                .map(Map.Entry::getValue)
+        // adding starting form 0 zero
+        // and ending of 100 to given points, to create ranges
+        List<Double> rangePoints = new ArrayList<>();
+        rangePoints.add(0.0);
+        pointList.stream().mapToDouble(Point::getProbability).forEach(rangePoints::add);
+        rangePoints.add(100.0);
+
+        //building Range List
+        List<Range> rangeList = new ArrayList<>();
+        for (int i = 0; i < rangePoints.size(); i++) {
+            int nextI = i + 1;
+            rangeList.add(new Range(rangePoints.get(i), rangePoints.get(nextI)));
+        }
+        //finding the given Point in the ranges
+        final Optional<Range> first = rangeList.stream()
+                .filter(k -> k.contains(number))
                 .findFirst();
+        if (first.isEmpty()) {
+            log.error("given number not found");
+            return Optional.empty();
+        }
+
+        final int indexInRangeList = rangeList.indexOf(first.get());
+        return Optional.of(pointList.get(indexInRangeList));
     }
 
 }
