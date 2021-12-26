@@ -1,4 +1,7 @@
-package de.papenhagen.entities;
+package de.papenhagen.service;
+
+import de.papenhagen.entities.Point;
+import de.papenhagen.entities.Range;
 
 import java.util.*;
 
