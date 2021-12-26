@@ -32,8 +32,7 @@ public class PointsService {
 
         //if both pigs have the same postion
         if (firstRoll.getPostion().equals(secondRoll.getPostion())) {
-            final Postion firstRollPostion = firstRoll.getPostion();
-            return switch (firstRollPostion) {
+            return switch (firstRoll.getPostion()) {
                 case FEEDS_UP, FEEDS_DOWN -> 20;
                 case STAND_ON_NOSE -> 40;
                 case LAY_LEFT, LAY_RIGHT -> 1;
