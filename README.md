@@ -12,8 +12,8 @@ by Arjan Verweij - http://membres.lycos.fr/arjan/
 Es wurde zur Berechnung der Wahrscheinlichkeiten auf die Datengrundlage von:
 „Schweinereien“ – Grundschüler untersuchen einen asymmetrischen Zufallsgenerator
 SANDRA SCHNABEL, MARBURG & BERND NEUBERT, GIESSEN
-
 zugegriffen.
+![Screenshot](/images/schweinewahrscheinlichkeit.png?raw=true "Screenshot aus dem Paper.")
 
 
 
