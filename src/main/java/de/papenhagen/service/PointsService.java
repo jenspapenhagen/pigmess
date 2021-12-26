@@ -1,27 +1,32 @@
 package de.papenhagen.service;
 
 import de.papenhagen.entities.Point;
-import de.papenhagen.entities.Postion;
 
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 
-@ApplicationScoped
+@RequestScoped
 public class PointsService {
 
-    public int calculatePoints() {
+    private Point firstRoll;
+
+    private Point secondRoll;
+
+    @PostConstruct
+    private void roll() {
         final double randomNumber = Math.random() * 100.0;
-        final Optional<Point> pointOne = RuleEngine.getPointTo(randomNumber);
+        firstRoll = RuleEngine.getPointTo(randomNumber).orElseThrow();
+
         final double randomNumber2 = Math.random() * 100.0;
-        final Optional<Point> pointTwo = RuleEngine.getPointTo(randomNumber2);
+        secondRoll = RuleEngine.getPointTo(randomNumber2).orElseThrow();
+    }
 
-        if (pointOne.isEmpty() || pointTwo.isEmpty()) {
-            return 0;
-        }
-
-        final Point firstRoll = pointOne.get();
-        final Point secondRoll = pointTwo.get();
-
+    /**
+     * This Methode calulates the Points on hand of 2 rolls a pig.
+     *
+     * @return the points
+     */
+    public int calculatePoints() {
         // Wikipedia:
         // https://de.wikipedia.org/wiki/Schweinerei_(Spiel)#Bewertung
         // Faule Sau – Beide Schweine liegen auf verschiedenen Seiten (einmal Punkt oben, einmal unten) – 0 Punkte
