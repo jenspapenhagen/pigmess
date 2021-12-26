@@ -25,19 +25,6 @@ public class PointsService {
         secondRoll = RuleEngine.getPointTo(randomNumber2, pointList).orElseThrow();
     }
 
-    private List<Point> ruleSetFor() {
-        final Point feedDown = new Point(5, FEEDS_DOWN, 9.05);
-        final Point feedUp = new Point(5, FEEDS_UP, 32.65);
-
-        final Point standOnNose = new Point(10, STAND_ON_NOSE, 2.10);
-        final Point standHalfHalsNose = new Point(15, STAND_HALF_ON_NOSE, 0.2);
-
-        final Point layLeft = new Point(1, LAY_LEFT, 31.05);
-        final Point layRight = new Point(1, LAY_RIGHT, 24.95);
-
-        return List.of(feedDown, feedUp, standOnNose, standHalfHalsNose, layLeft, layRight);
-    }
-
     /**
      * This Methode calculate the Points on hand of 2 rolls a pig.
      *
@@ -64,6 +51,23 @@ public class PointsService {
 
         //calculate odd positions of the pigs
         return firstRoll.getCount() + secondRoll.getCount();
+    }
+
+    /**
+     * build up the rule Set for this game
+     * @return the Rule set of this game
+     */
+    private List<Point> ruleSetFor() {
+        final Point feedDown = new Point(5, FEEDS_DOWN, 9.05);
+        final Point feedUp = new Point(5, FEEDS_UP, 32.65);
+
+        final Point standOnNose = new Point(10, STAND_ON_NOSE, 2.10);
+        final Point standHalfHalsNose = new Point(15, STAND_HALF_ON_NOSE, 0.2);
+
+        final Point layLeft = new Point(1, LAY_LEFT, 31.05);
+        final Point layRight = new Point(1, LAY_RIGHT, 24.95);
+
+        return List.of(feedDown, feedUp, standOnNose, standHalfHalsNose, layLeft, layRight);
     }
 
 }
