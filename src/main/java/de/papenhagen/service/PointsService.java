@@ -31,14 +31,6 @@ public class PointsService {
      * @return the points
      */
     public int calculatePoints() {
-        // Wikipedia:
-        // https://de.wikipedia.org/wiki/Schweinerei_(Spiel)#Bewertung
-        // Faule Sau – Beide Schweine liegen auf verschiedenen Seiten (einmal Punkt oben, einmal unten) – 0 Punkte
-        // für aktuelle Runde und der nächste Spieler ist an der Reihe
-        if (firstRoll.getCount() + secondRoll.getCount() == 2) {
-            return 0;
-        }
-
         //if both pigs have the same position
         if (firstRoll.getPostion().equals(secondRoll.getPostion())) {
             return switch (firstRoll.getPostion()) {
@@ -47,6 +39,14 @@ public class PointsService {
                 case STAND_HALF_ON_NOSE -> 60;
                 case LAY_LEFT, LAY_RIGHT -> 1;
             };
+        }
+
+        // Wikipedia:
+        // https://de.wikipedia.org/wiki/Schweinerei_(Spiel)#Bewertung
+        // Faule Sau – Beide Schweine liegen auf verschiedenen Seiten (einmal Punkt oben, einmal unten) – 0 Punkte
+        // für aktuelle Runde und der nächste Spieler ist an der Reihe
+        if (firstRoll.getCount() + secondRoll.getCount() == 2) {
+            return 0;
         }
 
         //calculate odd positions of the pigs
