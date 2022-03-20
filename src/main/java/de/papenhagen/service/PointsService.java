@@ -1,6 +1,7 @@
 package de.papenhagen.service;
 
 import de.papenhagen.entities.Point;
+import de.papenhagen.entities.Postion;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -19,10 +20,10 @@ public class PointsService {
     private void roll() {
         final List<Point> pointList = ruleSetFor();
         final double randomNumber = Math.random() * 100.0;
-        firstRoll = RuleEngine.getPointTo(randomNumber, pointList).orElseThrow();
+        firstRoll = RuleEngine.getPointTo(randomNumber, pointList).orElse(new Point(0, LAY_LEFT, 0 ));
 
         final double randomNumber2 = Math.random() * 100.0;
-        secondRoll = RuleEngine.getPointTo(randomNumber2, pointList).orElseThrow();
+        secondRoll = RuleEngine.getPointTo(randomNumber2, pointList).orElse(new Point(0, LAY_LEFT, 0 ));
     }
 
     /**

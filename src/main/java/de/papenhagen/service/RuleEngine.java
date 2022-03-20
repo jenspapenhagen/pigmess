@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 public class RuleEngine {
@@ -33,21 +35,39 @@ public class RuleEngine {
         rangePoints.add(100.0);
 
         //building Range List
-        List<Range> rangeList = new ArrayList<>();
-        for (int i = 0; i < rangePoints.size(); i++) {
-            int nextI = i + 1;
-            rangeList.add(new Range(rangePoints.get(i), rangePoints.get(nextI)));
+        if (rangePoints.size() % 2 != 0){
+            rangePoints.add(100.0);
         }
-        //finding the given Point in the ranges
-        final Optional<Range> first = rangeList.stream()
-                .filter(k -> k.contains(number))
-                .findFirst();
-        if (first.isEmpty()) {
-            log.error("given number not found");
+        //split the list into an odd and an even part
+        int midIndex = (rangePoints.size() - 1) / 2;
+        List<List<Double>> lists = new ArrayList<>(
+                rangePoints.stream()
+                        .collect(Collectors.partitioningBy(s -> rangePoints.indexOf(s) > midIndex))
+                        .values()
+        );
+
+        final List<Double> doubleList = lists.get(0);
+        final List<Double> doubleList2 = lists.get(1);
+        if (doubleList.size() != doubleList2.size()) {
+            log.error("the splitting has not worked correct.");
             return Optional.empty();
         }
 
-        final int indexInRangeList = rangeList.indexOf(first.get());
+        List<Range> rangeList = IntStream.range(0, (rangePoints.size() / 2 ) - 1)
+                .mapToObj(i -> new Range(doubleList.get(i), doubleList2.get(i)))
+                .collect(Collectors.toList());
+
+        //finding the given Point in the ranges
+        final Optional<Range> firstPointInRange = rangeList.stream()
+                .filter(k -> k.contains(number))
+                .findFirst();
+
+        if (firstPointInRange.isEmpty()) {
+            log.debug("given number not found");
+            return Optional.of(pointList.get(0));
+        }
+
+        final int indexInRangeList = rangeList.indexOf(firstPointInRange.get());
         return Optional.of(pointList.get(indexInRangeList));
     }
 
