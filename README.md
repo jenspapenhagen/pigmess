@@ -21,5 +21,12 @@ Zum Starten:
 
 ```bash
 ./mvnw compile quarkus:dev
-curl -w "\n" http://localhost:8080/pigmess
+wget --header="Content-Type: text/json" http://localhost:8080/pigmess
+```
+
+For getting this Response
+```json
+{
+ "points" : 20
+}
 ```

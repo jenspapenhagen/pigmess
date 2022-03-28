@@ -1,7 +1,6 @@
 package de.papenhagen.service;
 
 import de.papenhagen.entities.Point;
-import de.papenhagen.entities.Postion;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -16,15 +15,6 @@ public class PointsService {
 
     private Point secondRoll;
 
-    @PostConstruct
-    private void roll() {
-        final List<Point> pointList = ruleSetFor();
-        final double randomNumber = Math.random() * 100.0;
-        firstRoll = RuleEngine.getPointTo(randomNumber, pointList).orElse(new Point(0, LAY_LEFT, 0 ));
-
-        final double randomNumber2 = Math.random() * 100.0;
-        secondRoll = RuleEngine.getPointTo(randomNumber2, pointList).orElse(new Point(0, LAY_LEFT, 0 ));
-    }
 
     /**
      * This Methode calculate the Points on hand of 2 rolls a pig.
@@ -52,11 +42,9 @@ public class PointsService {
         return Math.abs(completedRoll / 5);
     }
 
-    /**
-     * build up the rule Set for this game
-     * @return the Rule set of this game
-     */
-    private List<Point> ruleSetFor() {
+    @PostConstruct
+    private void roll() {
+        // build up the rule Set for this game
         final Point feedDown = new Point(5, FEEDS_DOWN, 9.05);
         final Point feedUp = new Point(5, FEEDS_UP, 32.65);
 
@@ -66,7 +54,16 @@ public class PointsService {
         final Point layLeft = new Point(1, LAY_LEFT, 31.05);
         final Point layRight = new Point(1, LAY_RIGHT, 24.95);
 
-        return List.of(feedDown, feedUp, standOnNose, standHalfHalsNose, layLeft, layRight);
+        // the Rule set of this game
+        final List<Point> pointList = List.of(feedDown, feedUp, standOnNose, standHalfHalsNose, layLeft, layRight);
+
+        //roll
+        final double randomNumber = Math.random() * 100.0;
+        firstRoll = RuleEngine.getPointTo(randomNumber, pointList).orElse(new Point(0, LAY_LEFT, 0));
+
+        final double randomNumber2 = Math.random() * 100.0;
+        secondRoll = RuleEngine.getPointTo(randomNumber2, pointList).orElse(new Point(0, LAY_LEFT, 0));
     }
+
 
 }
