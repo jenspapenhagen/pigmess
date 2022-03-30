@@ -1,6 +1,5 @@
 package de.papenhagen;
 
-import de.papenhagen.entities.PointsReponse;
 import de.papenhagen.service.PointsService;
 import lombok.extern.slf4j.Slf4j;
 

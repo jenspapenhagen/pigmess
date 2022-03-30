@@ -1,4 +1,4 @@
-package de.papenhagen.entities;
+package de.papenhagen;
 
 public class PointsReponse {
     private int points;
