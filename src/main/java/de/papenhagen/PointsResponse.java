@@ -1,9 +1,9 @@
 package de.papenhagen;
 
-public class PointsReponse {
+public class PointsResponse {
     private int points;
 
-    public PointsReponse(int points) {
+    public PointsResponse(int points) {
         this.points = points;
     }
 

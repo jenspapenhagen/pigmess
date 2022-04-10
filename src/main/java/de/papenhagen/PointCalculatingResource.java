@@ -18,8 +18,8 @@ public class PointCalculatingResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public PointsReponse calculatePoints() {
-        final PointsReponse points = new PointsReponse(pointsService.calculatePoints());
+    public PointsResponse calculatePoints() {
+        final PointsResponse points = new PointsResponse(pointsService.calculatePoints());
         log.info("points: {}", points.getPoints());
         return points;
     }

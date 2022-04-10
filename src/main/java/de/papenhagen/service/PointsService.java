@@ -25,8 +25,8 @@ public class PointsService {
      */
     public int calculatePoints() {
         //if both pigs have the same position
-        if (firstRoll.getPostion().equals(secondRoll.getPostion())) {
-            return switch (firstRoll.getPostion()) {
+        if (firstRoll.postion().equals(secondRoll.postion())) {
+            return switch (firstRoll.postion()) {
                 case FEEDS_UP, FEEDS_DOWN -> 20;
                 case STAND_ON_NOSE -> 40;
                 case STAND_HALF_ON_NOSE -> 60;
@@ -36,7 +36,7 @@ public class PointsService {
 
         // Wikipedia:
         // https://de.wikipedia.org/wiki/Schweinerei_(Spiel)#Bewertung
-        final int completedRoll = firstRoll.getCount() + secondRoll.getCount();
+        final int completedRoll = firstRoll.count() + secondRoll.count();
         if (completedRoll % 5 == 0) {
             return completedRoll;
         }
@@ -46,6 +46,7 @@ public class PointsService {
 
     @PostConstruct
     private void roll() {
+        //hardcoded probability into 0 - 10000 Steps
         ValueRange rangeFeedDown = ValueRange.of(0, 905);
         ValueRange rangeFeedUp = ValueRange.of(906, 4171);
 
@@ -74,13 +75,13 @@ public class PointsService {
         final int randomNumber = random.nextInt(10000);
 
         firstRoll = pointList.stream()
-                .filter(p -> p.getRange().isValidIntValue(randomNumber))
+                .filter(p -> p.range().isValidIntValue(randomNumber))
                 .findFirst()
                 .orElse(new Point(0, LAY_LEFT, 0, ValueRange.of(0, 0)));
 
-        final int randomNumber2 = random.nextInt(100);
+        final int randomNumber2 = random.nextInt(10000);
         secondRoll = pointList.stream()
-                .filter(p -> p.getRange().isValidIntValue(randomNumber2))
+                .filter(p -> p.range().isValidIntValue(randomNumber2))
                 .findFirst()
                 .orElse(new Point(0, LAY_LEFT, 0, ValueRange.of(0, 0)));
     }
