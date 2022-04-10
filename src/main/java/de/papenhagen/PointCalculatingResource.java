@@ -19,9 +19,10 @@ public class PointCalculatingResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public PointsResponse calculatePoints() {
-        final PointsResponse points = new PointsResponse(pointsService.calculatePoints());
-        log.info("points: {}", points.getPoints());
-        return points;
+        final int calculatePoints = pointsService.calculatePoints();
+        log.info("points: {}", calculatePoints);
+
+        return new PointsResponse(calculatePoints);
     }
 }
 
