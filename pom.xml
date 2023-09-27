@@ -124,5 +124,19 @@
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
     </profile>
+    <profile>
+      <id>lambda</id>
+      <activation>
+        <property>
+          <name>lambda</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-amazon-lambda-http</artifactId>
+        </dependency>
+      </dependencies>
+   </profile>
   </profiles>
 </project>
