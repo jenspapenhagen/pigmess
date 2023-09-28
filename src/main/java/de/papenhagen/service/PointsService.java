@@ -1,22 +1,28 @@
 package de.papenhagen.service;
 
-import de.papenhagen.entities.Point;
+import de.papenhagen.entities.DiceCast;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+
 import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.Random;
 
-import static de.papenhagen.entities.Postion.*;
+import static de.papenhagen.entities.Postion.LAY_LEFT;
 
 @RequestScoped
 public class PointsService {
 
-    private Point firstRoll;
+    private DiceCast firstRoll;
 
-    private Point secondRoll;
+    private DiceCast secondRoll;
 
+    @PostConstruct
+    private void roll() {
+        firstRoll = rollThePig();
+        secondRoll =rollThePig();
+    }
 
     /**
      * This Methode calculate the Points on hand of 2 rolls a pig.
@@ -24,7 +30,7 @@ public class PointsService {
      * @return the points
      */
     public int calculatePoints() {
-        //if both pigs have the same position
+        // extra Points for a dice cast with the same position of the pigs
         if (firstRoll.postion().equals(secondRoll.postion())) {
             return switch (firstRoll.postion()) {
                 case FEEDS_UP, FEEDS_DOWN -> 20;
@@ -36,7 +42,7 @@ public class PointsService {
 
         // Wikipedia:
         // https://de.wikipedia.org/wiki/Schweinerei_(Spiel)#Bewertung
-        final int completedRoll = firstRoll.count() + secondRoll.count();
+        final int completedRoll = firstRoll.postion().getPoints() + secondRoll.postion().getPoints();
         if (completedRoll % 5 == 0) {
             return completedRoll;
         }
@@ -44,47 +50,22 @@ public class PointsService {
         return Math.abs(completedRoll / 5);
     }
 
-    @PostConstruct
-    private void roll() {
-        //hardcoded probability into 0 - 10000 Steps
-        ValueRange rangeFeedDown = ValueRange.of(0, 905);
-        ValueRange rangeFeedUp = ValueRange.of(906, 4171);
+    /**
+     * pig roll with fallback on the most possible passion
+     * @return the diceCast of the roll
+     */
+    private DiceCast rollThePig(){
+        //the ruleset
+        final List<DiceCast> ruleSet = RuleSetUtil.ruleSet();
 
-        ValueRange rangeStandOnNose = ValueRange.of(4172, 4382);
-        ValueRange rangeStandHalfHalsNose = ValueRange.of(4383, 4403);
-
-        ValueRange rangeLayLeft = ValueRange.of(4404, 7509);
-        ValueRange rangeLayRight = ValueRange.of(7510, 10000);
-
-        // build up the rule Set for this game
-        final Point feedDown = new Point(5, FEEDS_DOWN, 9.05, rangeFeedDown);
-        final Point feedUp = new Point(5, FEEDS_UP, 32.65, rangeFeedUp);
-
-        final Point standOnNose = new Point(10, STAND_ON_NOSE, 2.10, rangeStandOnNose);
-        final Point standHalfHalsNose = new Point(15, STAND_HALF_ON_NOSE, 0.20, rangeStandHalfHalsNose);
-
-        final Point layLeft = new Point(1, LAY_LEFT, 31.05, rangeLayLeft);
-        final Point layRight = new Point(1, LAY_RIGHT, 24.95, rangeLayRight);
-
-
-        // the Rule set of this game
-        final List<Point> pointList = List.of(feedDown, feedUp, standOnNose, standHalfHalsNose, layLeft, layRight);
-
-        //roll
-        Random random = new Random();
+        final Random random = new Random();
         final int randomNumber = random.nextInt(10000);
 
-        firstRoll = pointList.stream()
-                .filter(p -> p.range().isValidIntValue(randomNumber))
+       return ruleSet.stream()
+                .filter(diceCast -> diceCast.range().isValidIntValue(randomNumber))
                 .findFirst()
-                .orElse(new Point(0, LAY_LEFT, 0, ValueRange.of(0, 0)));
+                .orElse(new DiceCast(LAY_LEFT, ValueRange.of(0, 0)));
 
-        final int randomNumber2 = random.nextInt(10000);
-        secondRoll = pointList.stream()
-                .filter(p -> p.range().isValidIntValue(randomNumber2))
-                .findFirst()
-                .orElse(new Point(0, LAY_LEFT, 0, ValueRange.of(0, 0)));
     }
-
 
 }

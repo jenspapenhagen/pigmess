@@ -1,10 +1,27 @@
 package de.papenhagen.entities;
 
 public enum Postion {
-    FEEDS_DOWN,
-    FEEDS_UP,
-    STAND_ON_NOSE,
-    STAND_HALF_ON_NOSE,
-    LAY_LEFT,
-    LAY_RIGHT
+    FEEDS_DOWN(5, 9.05),
+    FEEDS_UP(5, 32.65),
+    STAND_ON_NOSE(10,2.10),
+    STAND_HALF_ON_NOSE(15,0.20),
+    LAY_LEFT(1,31.05),
+    LAY_RIGHT(1,24.95);
+
+    public final int points;
+    public final double probability;
+
+
+    public int getPoints() {
+        return points;
+    }
+
+    public double getProbability() {
+        return probability;
+    }
+
+    Postion(int points, double probability) {
+        this.points = points;
+        this.probability = probability;
+    }
 }
