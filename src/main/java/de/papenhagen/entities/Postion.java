@@ -1,5 +1,8 @@
 package de.papenhagen.entities;
 
+import lombok.Getter;
+
+@Getter
 public enum Postion {
     FEEDS_DOWN(5, 9.05),
     FEEDS_UP(5, 32.65),
@@ -10,15 +13,6 @@ public enum Postion {
 
     public final int points;
     public final double probability;
-
-
-    public int getPoints() {
-        return points;
-    }
-
-    public double getProbability() {
-        return probability;
-    }
 
     Postion(int points, double probability) {
         this.points = points;
