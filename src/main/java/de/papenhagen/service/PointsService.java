@@ -2,8 +2,8 @@ package de.papenhagen.service;
 
 import de.papenhagen.entities.Point;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import java.time.temporal.ValueRange;
 import java.util.List;
 import java.util.Random;
