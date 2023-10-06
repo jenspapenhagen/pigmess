@@ -19,17 +19,11 @@ import io.quarkus.logging.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Random;
-import java.util.Spliterators;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Spliterator.IMMUTABLE;
-import static java.util.Spliterator.ORDERED;
 
 
 /**
@@ -37,14 +31,12 @@ import static java.util.Spliterator.ORDERED;
  *
  * <p>
  * Example usages:
- *
  * Random random = ...
  * Map<String, Double>; stringWeights = new HashMap<>();
  * stringWeights.put("a", 4d);
  * stringWeights.put("b", 3d);
  * stringWeights.put("c", 12d);
  * stringWeights.put("d", 1d);
- *
  * RandomSelector<String> selector = RandomSelector.weighted(stringWeights.keySet(), s -> stringWeights.get(s));
  * List<String> selection = new ArrayList<>();
  * for (int i = 0; i < 10; i++) {
@@ -57,28 +49,6 @@ import static java.util.Spliterator.ORDERED;
  */
 @Slf4j
 public final class RandomSelector<T> {
-
-    /**
-     * Creates a new random selector based on a uniform distribution.
-     *
-     * <p>
-     * A copy of <tt>elements</tt> is kept, so any modification to <tt>elements</tt> will not be
-     * reflected in returned values.
-     *
-     * @param <T>
-     * @param elements
-     * @return
-     * @throws IllegalArgumentException if <tt>elements</tt> is empty.
-     */
-    public static <T> RandomSelector<T> uniform(final Collection<T> elements)
-            throws IllegalArgumentException {
-        requireNonNull(elements, "collection must not be null");
-
-        final int size = elements.size();
-        final T[] els = elements.toArray((T[]) new Object[size]);
-
-        return new RandomSelector<>(els, r -> r.nextInt(size));
-    }
 
     /**
      * Creates a random selector among <tt>elements</tt> where the elements have a weight defined by
@@ -107,6 +77,8 @@ public final class RandomSelector<T> {
         }
 
         final int size = elements.size();
+
+        @SuppressWarnings("unchecked")
         final T[] elementArray = elements.toArray((T[]) new Object[size]);
 
         double totalWeight = 0d;
@@ -144,47 +116,6 @@ public final class RandomSelector<T> {
         return elements[selection.applyAsInt(random)];
     }
 
-    /**
-     * Returns a stream of elements using <tt>random</tt>. The stream must use a terminal operation to
-     * become closed and free the resources it's been using.
-     *
-     * <p>
-     * Even though this instance is thread-safe and for performance reasons, it is recommended to use
-     * a different stream per thread given that Random has performance drawbacks in multi-threaded
-     * environments.
-     *
-     * @param random
-     * @return
-     */
-    public Stream<T> stream(final Random random) {
-        requireNonNull(random, "random must not be null");
-        return StreamSupport.stream(
-                Spliterators.spliteratorUnknownSize(
-                        new BaseIterator(random),
-                        IMMUTABLE | ORDERED
-                ),
-                false
-        );
-    }
-
-    private class BaseIterator implements Iterator<T> {
-
-        private final Random random;
-
-        BaseIterator(final Random random) {
-            this.random = random;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return true;
-        }
-
-        @Override
-        public T next() {
-            return RandomSelector.this.next(this.random);
-        }
-    }
 
     private static class RandomWeightedSelection implements ToIntFunction<Random> {
         // Alias method implementation O(1)
