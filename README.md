@@ -21,7 +21,7 @@ NEW DATASET:
 |**(Snouter)**       |54                              |67                         |13        |47         |2        |1               |
 |**(Leaning Jowler)**|10                              |10                         |0         |7          |1        |1               |
 
-(hint: these are only 5977 dice rolls, the missing result from 23 dice rolls are unknown)
+(hint: these are only 5977 dice rolls, the missing result from 23 dice rolls are resulted in the two pigs touching each other)
 
 
 OLD DATASET:
