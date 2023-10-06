@@ -42,6 +42,8 @@ wget --header="Content-Type: text/json" http://localhost:8080/pigmess
 For getting this Response
 ```json
 {
- "points" : 20
+  "firstRoll":"FEEDS_UP",
+  "points":1,
+  "secondRoll":"LAY_RIGHT"
 }
 ```
