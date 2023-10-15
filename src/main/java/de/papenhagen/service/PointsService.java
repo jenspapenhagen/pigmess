@@ -46,7 +46,7 @@ public class PointsService {
         return new Output(roll.first(), roll.second(), Math.abs(completedRoll / 5));
     }
 
-    public record Output(Position firstRoll, Position secondRoll, int points) {
+    public record Output(Position rollFirst, Position rollSecond, int points) {
 
     }
 
