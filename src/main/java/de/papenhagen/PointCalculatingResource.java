@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import lombok.extern.slf4j.Slf4j;
 
 
-
 @Path("/pigmess")
 @Slf4j
 public class PointCalculatingResource {

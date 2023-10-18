@@ -5,6 +5,7 @@ import de.papenhagen.entities.Position;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 @RequestScoped
@@ -15,9 +16,9 @@ public class PointsService {
 
     @PostConstruct
     private void roll() {
-        final Random random = new Random();
+        final SecureRandom secureRandom = new SecureRandom();
 
-        roll = RuleSetUtil.fullRoll(random.nextInt(100_000));
+        roll = RuleSetUtil.fullRoll(secureRandom.nextInt(100_000));
     }
 
     /**
