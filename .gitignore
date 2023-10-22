@@ -8,7 +8,6 @@ release.properties
 # Eclipse
 .project
 .classpath
-.settings/
 bin/
 
 # IntelliJ
@@ -21,7 +20,6 @@ bin/
 nb-configuration.xml
 
 # Visual Studio Code
-.vscode
 .factorypath
 
 # OSX
