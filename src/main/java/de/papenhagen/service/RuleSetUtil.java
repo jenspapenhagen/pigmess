@@ -78,8 +78,8 @@ public class RuleSetUtil {
 
 
     private static DoubleRoll getPosition(final int randomNumber, final Map<DoubleRoll, Double> roll) {
-        final long randomSeed = 0;
-        final Random random = new Random(randomSeed);
+        final long byte[] seed = getSecureRandomSeed();
+        final SecureRandom random = = new SecureRandom(seed);
         final RandomSelector<DoubleRoll> selector = RandomSelector.weighted(roll.keySet(),s -> roll.get(s).doubleValue());
         final int elements = 100_000;
         final List<DoubleRoll> selection = new ArrayList<>(elements);
