@@ -3,11 +3,22 @@ package de.papenhagen.service;
 import de.papenhagen.entities.DoubleRoll;
 import io.quarkus.logging.Log;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static de.papenhagen.entities.Position.*;
+import static de.papenhagen.entities.Position.FEEDS_DOWN;
+import static de.papenhagen.entities.Position.FEEDS_UP;
+import static de.papenhagen.entities.Position.LAY_LEFT;
+import static de.papenhagen.entities.Position.LAY_RIGHT;
+import static de.papenhagen.entities.Position.STAND_HALF_ON_NOSE;
+import static de.papenhagen.entities.Position.STAND_ON_NOSE;
 import static java.util.Objects.nonNull;
 
 public class RuleSetUtil {
@@ -78,24 +89,28 @@ public class RuleSetUtil {
 
 
     private static DoubleRoll getPosition(final int randomNumber, final Map<DoubleRoll, Double> roll) {
-        final long byte[] seed = getSecureRandomSeed();
-        final SecureRandom random = = new SecureRandom(seed);
-        final RandomSelector<DoubleRoll> selector = RandomSelector.weighted(roll.keySet(),s -> roll.get(s).doubleValue());
-        final int elements = 100_000;
-        final List<DoubleRoll> selection = new ArrayList<>(elements);
-        if (nonNull(selector)) {
-            for (int i = 0; i < elements; i++) {
-                selection.add(selector.next(random));
-            }
-        }
-        int size = selection.size();
-        if (size <= randomNumber) {
-            Log.error("randomNumber to high: " + randomNumber + " from: " + size);
-            //fallback
-            return selection.get(9000);
-        }
+        final List<DoubleRoll> selection = new ArrayList<>();
+        try {
+            final SecureRandom nativePRNG = SecureRandom.getInstance("NativePRNG");
+            nativePRNG.setSeed("abcdefghijklmnop".getBytes("us-ascii"));
 
-        return selection.get(randomNumber);
+            final RandomSelector<DoubleRoll> selector = RandomSelector.weighted(roll.keySet(), s -> roll.get(s).doubleValue());
+            final int elements = 100_000;
+            if (nonNull(selector)) {
+                for (int i = 0; i < elements; i++) {
+                    selection.add(selector.next(nativePRNG));
+                }
+            }
+            int size = selection.size();
+            if (size <= randomNumber) {
+                Log.error("randomNumber to high: " + randomNumber + " from: " + size);
+                //fallback
+                return selection.get(9000);
+            }
+            return selection.get(randomNumber);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
