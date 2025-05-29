@@ -16,7 +16,8 @@ package de.papenhagen.service;
  */
 
 import io.quarkus.logging.Log;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Random;
@@ -40,15 +41,16 @@ import static java.util.Objects.requireNonNull;
  * RandomSelector<String> selector = RandomSelector.weighted(stringWeights.keySet(), s -> stringWeights.get(s));
  * List<String> selection = new ArrayList<>();
  * for (int i = 0; i < 10; i++) {
- *   selection.add(selector.next(random));
+ * selection.add(selector.next(random));
  * }
- *
  *
  * @param <T>
  * @author Olivier Grégoire
  */
-@Slf4j
+
 public final class RandomSelector<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(RandomSelector.class);
 
     /**
      * Creates a random selector among <tt>elements</tt> where the elements have a weight defined by
@@ -78,8 +80,7 @@ public final class RandomSelector<T> {
 
         final int size = elements.size();
 
-        @SuppressWarnings("unchecked")
-        final T[] elementArray = elements.toArray((T[]) new Object[size]);
+        @SuppressWarnings("unchecked") final T[] elementArray = elements.toArray((T[]) new Object[size]);
 
         double totalWeight = 0d;
         final double[] discreteProbabilities = new double[size];

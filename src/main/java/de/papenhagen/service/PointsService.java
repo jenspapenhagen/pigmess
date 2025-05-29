@@ -6,7 +6,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 @RequestScoped
 public class PointsService {
